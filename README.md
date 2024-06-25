@@ -55,8 +55,8 @@ https://github.com/ishaj72/TicketUI--React
 
 ## Images
 - API images
-<img src="./assets/api1.png" alt="addtrains" width="200" height="150">
-<img src="./assets/api3.png" alt="addtrains" width="200" height="150">
+<img src="./api1.png" alt="addtrains" width="200" height="150">
+<img src="./api3.png" alt="addtrains" width="200" height="150">
 
 - JWT Authorization
-<img src="./assets/api2.png" alt="addtrains" width="200" height="150">
+<img src="./api2.png" alt="addtrains" width="200" height="150">
