@@ -14,11 +14,11 @@ namespace TrainTicket.Controllers
         private readonly ITrainDetailsInterface _trainDetailsInterface;
         private readonly IMapper _mapper;
 
-        public SeatDetailsController(ISeatDetailsInterface seatDetailsInterface, ITrainDetailsInterface trainDetailsInterface,IMapper mapper)
+        public SeatDetailsController(ISeatDetailsInterface seatDetailsInterface, ITrainDetailsInterface trainDetailsInterface, IMapper mapper)
         {
             _seatDetailsInterface = seatDetailsInterface;
             _trainDetailsInterface = trainDetailsInterface;
-            _mapper = mapper;   
+            _mapper = mapper;
         }
 
         [HttpPost("AddSeat")]

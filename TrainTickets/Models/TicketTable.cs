@@ -3,9 +3,9 @@
 namespace TrainTicket.Models
 {
     public class TicketTable
-    { 
+    {
         [Key]
-        public string PNR {  get; set; }
+        public string PNR { get; set; }
         [Required]
         public string PassengerName { get; set; }
         [Required]
@@ -13,6 +13,7 @@ namespace TrainTicket.Models
         [Required]
         public string PassengerGender { get; set; }
         [Required]
+        [RegularExpression("^(General|Ladies|Senior Citizen)$")]
         public string SeatQuota { get; set; }
         [Required]
         public string SeatType { get; set; }

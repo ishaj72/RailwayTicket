@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -19,7 +17,7 @@ namespace TrainTicket.Controllers
         private DateTime expires;
         private readonly ReservationDbContext _context;
 
-        public UserLoginController(IUserLoginInterface userLoginInterface , IConfiguration configuration, ReservationDbContext context)
+        public UserLoginController(IUserLoginInterface userLoginInterface, IConfiguration configuration, ReservationDbContext context)
         {
             _userLoginInterface = userLoginInterface;
             _configuration = configuration;
@@ -27,13 +25,13 @@ namespace TrainTicket.Controllers
         }
 
         [HttpPost("Login")]
-        public IActionResult Login(string userId, string password)
+        public IActionResult Login(string userid, string password)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var userToken = Authenticate(userId, password);
+            var userToken = Authenticate(userid, password);
 
             if (userToken != null)
             {
@@ -59,7 +57,7 @@ namespace TrainTicket.Controllers
             var token = new JwtSecurityToken(_configuration["Jwt:Issuer"], _configuration["Jwt:Audience"],
                 claims,
                 expires = DateTime.Now.AddMinutes(15),
-                signingCredentials : credentials);
+                signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
         private UserDetails Authenticate(string userId, string password)

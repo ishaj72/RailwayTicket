@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using System;
 using TrainTicket.Interfaces;
 using TrainTicket.Models;
 
@@ -18,7 +16,7 @@ namespace TrainTicket.Repository
         }
 
         public TrainDetailsDto AddTrains(TrainDetailsDto trainDto)
-        { 
+        {
             var train = _mapper.Map<TrainDetails>(trainDto);
 
             _context.Add(train);
@@ -29,13 +27,14 @@ namespace TrainTicket.Repository
 
         public TrainDetailsDto GetTrainByNumber(int trainid)
         {
-            var train = _context.Trains.FirstOrDefault(t => t.TrainId == trainid);
+            var train = _context.Trains.Find(trainid);
             return _mapper.Map<TrainDetailsDto>(train);
         }
+
         public TrainDetailsDto UpdateTrain(int trainid, TrainDetailsDto trainDto)
         {
             var train = _mapper.Map<TrainDetails>(trainDto);
-            var existingTrain = _context.Trains.FirstOrDefault(t => t.TrainId == trainid);
+            var existingTrain = _context.Trains.Find(trainid);
 
             if (existingTrain != null)
             {
@@ -53,18 +52,20 @@ namespace TrainTicket.Repository
             }
             return null;
         }
-        public bool Delete(int trainid)
-        {
-            var userToDelete = _context.Trains.FirstOrDefault(u => u.TrainId == trainid);
 
-            if (userToDelete != null)
+        public bool Delete(int trainNumber)
+        {
+            var trainToDelete = _context.Trains.SingleOrDefault(t => t.TrainNumber == trainNumber);
+
+            if (trainToDelete != null)
             {
-                _context.Trains.Remove(userToDelete);
+                _context.Trains.Remove(trainToDelete);
                 _context.SaveChanges();
                 return true;
             }
 
             return false;
         }
+
     }
 }

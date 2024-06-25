@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 using TrainTicket.Interfaces;
 using TrainTicket.Models;
 
@@ -13,7 +12,7 @@ namespace TrainTicket.Controllers
         private readonly ITrainDetailsInterface _trainDetailsInterface;
         private readonly ReservationDbContext _context;
 
-        public TrainDetailsController(ITrainDetailsInterface trainDetailsInterface,ReservationDbContext context)
+        public TrainDetailsController(ITrainDetailsInterface trainDetailsInterface, ReservationDbContext context)
         {
             _trainDetailsInterface = trainDetailsInterface;
         }
@@ -26,8 +25,8 @@ namespace TrainTicket.Controllers
             {
                 return BadRequest(ModelState);
             }
-            DateTime minDepartureDate = DateTime.Now; 
-            DateTime maxDepartureDate = DateTime.Now.AddMonths(3); 
+            DateTime minDepartureDate = DateTime.Now;
+            DateTime maxDepartureDate = DateTime.Now.AddMonths(3);
 
             if (trainDto.SourceDeparture >= minDepartureDate &&
                 trainDto.DestinationDeparture >= minDepartureDate &&
@@ -51,14 +50,14 @@ namespace TrainTicket.Controllers
 
         [HttpPut("UpdateTrain")]
         [Authorize(Roles = "Admin")]
-        public IActionResult UpdateTrain(int trainid,[FromBody] TrainDetailsDto trainDto)
+        public IActionResult UpdateTrain(int trainid, [FromBody] TrainDetailsDto trainDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var updatedTrain = _trainDetailsInterface.UpdateTrain(trainid,trainDto);
+            var updatedTrain = _trainDetailsInterface.UpdateTrain(trainid, trainDto);
             if (updatedTrain != null)
             {
                 return Ok(updatedTrain);
@@ -67,9 +66,9 @@ namespace TrainTicket.Controllers
         }
         [HttpDelete("Delete")]
         [Authorize(Roles = "Admin")]
-        public IActionResult Delete(int trainid)
+        public IActionResult Delete(int trainNumber)
         {
-            var deleted = _trainDetailsInterface.Delete(trainid);
+            var deleted = _trainDetailsInterface.Delete(trainNumber);
             if (deleted)
             {
                 return Ok("Train deleted successfully.");

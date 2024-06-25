@@ -1,12 +1,12 @@
-﻿using System.Net.Mail;
-using System.Net;
+﻿using System.Net;
+using System.Net.Mail;
 using System.Text;
 using TrainTicket.Interfaces;
 using TrainTicket.Models;
 
 namespace TrainTicket.Repository
 {
-    public class EmailSenderRepository:IEmailSenderInterface
+    public class EmailSenderRepository : IEmailSenderInterface
     {
         public void SendEmail(string toEmail, string subject)
         {
@@ -20,9 +20,10 @@ namespace TrainTicket.Repository
             mailMessage.Subject = subject;
             mailMessage.IsBodyHtml = true;
             StringBuilder mailBody = new StringBuilder();
-            mailBody.AppendFormat("<h1>User Registered</h1>");
+            mailBody.AppendFormat("<h1>User Registered!!</h1>");
             mailBody.AppendFormat("<br />");
-            mailBody.AppendFormat("<p>Thank you For Registering account</p>");
+            mailBody.AppendFormat("<p>Thank you for registering with our online ticket reservation Site.This mesage confirms that your account has been created.</p>");
+            mailBody.AppendFormat("<br />");
             mailMessage.Body = mailBody.ToString();
             client.Send(mailMessage);
         }

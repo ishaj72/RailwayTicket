@@ -12,7 +12,7 @@ namespace TrainTicket.Controllers
 
         public UserController(IUserInterface userInterface)
         {
-            _userInterface = userInterface; 
+            _userInterface = userInterface;
         }
 
         [HttpPost("Create")]
@@ -50,28 +50,40 @@ namespace TrainTicket.Controllers
         public IActionResult Delete(string emailId)
         {
             var deleted = _userInterface.Delete(emailId);
-           if (deleted)
-           {
+            if (deleted)
+            {
                 return Ok("User deleted successfully.");
             }
             return NotFound("User not found.");
         }
 
-        [HttpPost("BookTicket")]
-        public IActionResult BookTicket([FromBody] TicketTable ticket)
+        [HttpPost("BookTickets")]
+        public IActionResult BookTickets([FromBody] List<TicketTable> tickets)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            
-            var newUser = _userInterface.BookTicket(ticket);
-            if (newUser != null)
+
+            var bookedTicketsWithPrice = _userInterface.BookTickets(tickets);
+            if (bookedTicketsWithPrice.Count > 0)
             {
-                return Ok("Ticket booked successfully. Thank you!");
+                // Construct a response containing the success message and ticket prices
+                var response = new
+                {
+                    Message = "Tickets booked successfully. Thank you!",
+                    Tickets = bookedTicketsWithPrice.Select(bt => new
+                    {
+                        Ticket = bt.Item1,
+                        Price = bt.Item2
+                    })
+                };
+                return Ok(response);
             }
-            return BadRequest("Failed to book ticket.");
+            return BadRequest("Failed to book tickets.");
         }
+
+
 
         [HttpDelete("CancelTicket")]
         public IActionResult CancelTicket(string pnr)
@@ -87,18 +99,19 @@ namespace TrainTicket.Controllers
         }
 
 
-        [HttpPost("Change Password")]
+        [HttpPost("ChangePassword")]
         public IActionResult ResetPassword(string userEmail, string newPassword)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var newpass = _userInterface.ResetPassword(userEmail, newPassword); 
-            if(newpass != null) 
+            var newpass = _userInterface.ResetPassword(userEmail, newPassword);
+            if (newpass != null)
             {
                 return Ok("Your password is changed");
             }
             return BadRequest("Password Changed");
         }
-    }}
+    }
+}

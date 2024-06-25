@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TrainTickets")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+39e467ef3e2c2b9a7c0542649f3843635d42df33")]
 [assembly: System.Reflection.AssemblyProductAttribute("TrainTickets")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TrainTickets")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

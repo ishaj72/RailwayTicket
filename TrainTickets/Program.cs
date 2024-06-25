@@ -7,18 +7,33 @@ using TrainTicket.Interfaces;
 using TrainTicket.Models;
 using TrainTicket.Repository;
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Define the CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:5173")
+                                .AllowAnyMethod()
+                                .AllowAnyOrigin()
+                                .AllowAnyHeader();
+
+                      });
+});
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(typeof(Program));
-builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddDbContext<ReservationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-/// Adding interface and repositories for their usage in whole appliction
+// Adding interface and repositories for their usage in whole application
 builder.Services.AddScoped<IUserLoginInterface, UserLoginRepository>();
 builder.Services.AddScoped<IUserInterface, UserRepository>();
 builder.Services.AddScoped<IAdminLoginInterface, AdminLoginRepository>();
@@ -39,11 +54,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-        ClockSkew = TimeSpan.Zero ///Token is invalidated immediately after its expiration time
+        ClockSkew = TimeSpan.Zero // Token is invalidated immediately after its expiration time
     };
 });
 
-//Add services for Swagger
+// Add services for Swagger
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new() { Title = "TrainTicket API", Version = "v1" });
@@ -69,8 +84,10 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-
 var app = builder.Build();
+
+// Apply the CORS policy
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthentication();
 
@@ -88,4 +105,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-

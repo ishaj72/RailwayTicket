@@ -6,13 +6,14 @@ namespace TrainTicket.Repository
 {
     public class AdminLoginRepository : IAdminLoginInterface
     {
-        private ReservationDbContext _context;
+        private readonly ReservationDbContext _context;
+
         public AdminLoginRepository(ReservationDbContext context)
         {
             _context = context;
         }
 
-        public Admin AdminLogin(string id, string name,string password)
+        public Admin AdminLogin([FromQuery] string id, [FromQuery] string name, [FromQuery] string password)
         {
             return _context.Admins.FirstOrDefault(u => u.AdminId == id && u.AdminPassword == password && u.AdminName == name);
         }

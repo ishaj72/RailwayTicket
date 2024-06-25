@@ -1,4 +1,5 @@
-﻿using TrainTicket.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc;
+using TrainTicket.Interfaces;
 using TrainTicket.Models;
 
 namespace TrainTicket.Repository
@@ -7,14 +8,13 @@ namespace TrainTicket.Repository
     {
         private readonly ReservationDbContext _context;
 
-        public UserLoginRepository (ReservationDbContext context)
+        public UserLoginRepository(ReservationDbContext context)
         {
             _context = context;
         }
 
-        public UserDetails Login(string userid, string password)
+        public UserDetails Login([FromQuery] string userid, [FromQuery] string password)
         {
-
             return _context.Users.FirstOrDefault(u => u.UserId == userid && u.UserPassword == password);
         }
     }

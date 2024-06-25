@@ -139,3 +139,4 @@ E:\MyApps\TrainTickets\TrainTickets\obj\Debug\net8.0\refint\TrainTickets.dll
 E:\MyApps\TrainTickets\TrainTickets\obj\Debug\net8.0\TrainTickets.pdb
 E:\MyApps\TrainTickets\TrainTickets\obj\Debug\net8.0\TrainTickets.genruntimeconfig.cache
 E:\MyApps\TrainTickets\TrainTickets\obj\Debug\net8.0\ref\TrainTickets.dll
+E:\MyApps\TrainTickets\TrainTickets\obj\Debug\net8.0\TrainTickets.sourcelink.json

@@ -1,6 +1,6 @@
-﻿using TrainTicket.Interfaces;
+﻿using Microsoft.AspNetCore.Authorization;
+using TrainTicket.Interfaces;
 using TrainTicket.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace TrainTicket.Repository
 {
@@ -16,6 +16,7 @@ namespace TrainTicket.Repository
             _emailSender = emailSender;
             _httpContextAccessor = httpContextAccessor;
         }
+
         [Authorize(Roles = "User")]
         public UserDetails Create(UserDetails user)
         {
@@ -34,9 +35,10 @@ namespace TrainTicket.Repository
 
             _context.Add(user);
             _context.SaveChanges();
-            _emailSender.SendEmail(user.UserEmail, "User Regitered");
+            _emailSender.SendEmail(user.UserEmail, "User Registered");
             return user;
         }
+
         [Authorize(Roles = "User")]
         public UserDetails UpdateUser(string emailId, UserDetails updatedUser)
         {
@@ -44,7 +46,6 @@ namespace TrainTicket.Repository
 
             if (existingUser != null)
             {
-                
                 existingUser.UserAge = updatedUser.UserAge;
                 existingUser.UserPhoneNumber = updatedUser.UserPhoneNumber;
                 existingUser.UserAddress = updatedUser.UserAddress;
@@ -55,6 +56,7 @@ namespace TrainTicket.Repository
 
             return null;
         }
+
         [Authorize(Roles = "User")]
         public bool Delete(string emailId)
         {
@@ -67,52 +69,82 @@ namespace TrainTicket.Repository
                 return true;
             }
 
-            return false; 
+            return false;
         }
 
         [Authorize(Roles = "User")]
-        public TicketTable BookTicket(TicketTable ticket)
+
+        public List<(TicketTable, decimal)> BookTickets(List<TicketTable> tickets)
         {
-            const string useChars = "1234567890";
-            Random random = new Random();
-            int pnrLength = random.Next(7,8);
-            char[] chars = new char[pnrLength];
-            for (int i = 0; i < pnrLength; i++)
+            var bookedTickets = new List<(TicketTable, decimal)>();
+
+            foreach (var ticket in tickets)
             {
-                chars[i] = useChars[random.Next(useChars.Length)];
-            }
-            ticket.PNR = new string(chars);
-
-            var seat = _context.Seats.FirstOrDefault(s => s.SeatType == ticket.SeatType && s.SeatStatus == "Not Reserved");
-            var train = _context.Trains.FirstOrDefault(t => t.TrainNumber == ticket.TrainNumber);
-
-            if (seat != null && train != null)
-            {
-                seat.SeatStatus = "Reserved";
-                _context.Add(ticket);
-                _context.SaveChanges();
-
-                var userEmail = _httpContextAccessor.HttpContext.User.Identity.Name;
-                var trainDetails = new TrainDetails
+                const string useChars = "1234567890";
+                Random random = new Random();
+                int pnrLength = random.Next(7, 8);
+                char[] chars = new char[pnrLength];
+                for (int i = 0; i < pnrLength; i++)
                 {
-                    TrainName = train.TrainName,
-                    SourceArrival = train.SourceArrival,
-                    SourceDeparture = train.SourceDeparture 
-                };
+                    chars[i] = useChars[random.Next(useChars.Length)];
+                }
+                ticket.PNR = new string(chars);
 
-                var seatDetails = new SeatDetails
+                var seat = _context.Seats.FirstOrDefault(s => s.SeatType == ticket.SeatType && s.SeatStatus == "Not Reserved");
+                var train = _context.Trains.FirstOrDefault(t => t.TrainNumber == ticket.TrainNumber);
+
+                if (seat != null && train != null)
                 {
-                    SeatType = seat.SeatType,
-                    SeatNumber = seat.SeatNumber
-                };
+                    seat.SeatStatus = "Reserved";
+                    _context.Add(ticket);
+                    _context.SaveChanges();
 
-                _emailSender.SendEmailForTicket(userEmail, "Ticket Details", trainDetails, seatDetails, ticket);
-                return ticket;
+                    var userEmail = _httpContextAccessor.HttpContext.User.Identity.Name;
+                    var trainDetails = new TrainDetails
+                    {
+                        TrainName = train.TrainName,
+                        SourceArrival = train.SourceArrival,
+                        SourceDeparture = train.SourceDeparture
+                    };
+
+                    var seatDetails = new SeatDetails
+                    {
+                        SeatType = seat.SeatType,
+                        SeatNumber = seat.SeatNumber
+                    };
+
+                    // Calculate ticket price based on seat type
+                    decimal ticketPrice = CalculateTicketPrice(ticket);
+
+                    // Include GST and convenience fee
+                    ticketPrice += 50 + 30; // GST: 50, Convenience fee: 30
+
+                    // Add the booked ticket and its price to the list
+                    bookedTickets.Add((ticket, ticketPrice));
+                }
             }
 
-            return null;
+            return bookedTickets;
         }
 
+        private decimal CalculateTicketPrice(TicketTable ticket)
+        {
+            switch (ticket.SeatType)
+            {
+                case "Sleeper":
+                    return 780;
+                case "General":
+                    return 380;
+                case "3AC":
+                    return 980;
+                case "2AC":
+                    return 1380;
+                case "1AC":
+                    return 1680;
+                default:
+                    return 0; // Handle invalid seat type
+            }
+        }
         public TicketTable CancelTicket(string pnr)
         {
             var ticketToCancel = _context.TicketTables.FirstOrDefault(t => t.PNR == pnr);
@@ -135,7 +167,6 @@ namespace TrainTicket.Repository
         }
 
 
-        [Authorize(Roles ="User")]
         public UserDetails ResetPassword(string userEmail, string newPassword)
         {
             var changePassword = _context.Users.FirstOrDefault(u => u.UserEmail == userEmail);

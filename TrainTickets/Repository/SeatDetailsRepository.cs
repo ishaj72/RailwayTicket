@@ -9,7 +9,7 @@ namespace TrainTicket.Repository
         private readonly ReservationDbContext _context;
         private readonly IMapper _mapper;
 
-        public SeatDetailsRepository(ReservationDbContext context,IMapper mapper)
+        public SeatDetailsRepository(ReservationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -17,7 +17,7 @@ namespace TrainTicket.Repository
 
         public SeatDetails AddSeat(SeatDetails seat)
         {
-            var seatValidation = _context.Seats.FirstOrDefault(s => s.SeatType == "1AC"|| s.SeatType == "Sleeper"|| s.SeatType == "2AC"|| s.SeatType == "3AC"|| s.SeatType == "General" );
+            var seatValidation = _context.Seats.FirstOrDefault(s => s.SeatType == "1AC" || s.SeatType == "Sleeper" || s.SeatType == "2AC" || s.SeatType == "3AC" || s.SeatType == "General");
             if (seatValidation != null)
             {
                 seat.SeatStatus = "Not Reserved";
@@ -27,33 +27,34 @@ namespace TrainTicket.Repository
             }
             return null;
         }
-        //public SeatDetailsDto UpdateSeat(int seatId, SeatDetailsDto seatDto)
-        //{
-        //    var seat = _mapper.Map<SeatDetails>(seatDto);
-        //    var existingSeat = _context.Seats.FirstOrDefault(t => t.SeatId == seatId);
-
-        //    if (existingSeat != null)
-        //    {
-        //        existingSeat.SeatType = seat.SeatType;
-        //        existingSeat.SeatNumber = seat.SeatNumber;
-        //        _context.SaveChanges();
-
-        //        return _mapper.Map<SeatDetailsDto>(existingSeat);
-        //    }
-        //    return null;
-        //}
-        //public bool Delete(int seatId)
-        //{
-        //    var seatToDelete = _context.Seats.FirstOrDefault(u => u.SeatId == seatId);
-
-        //    if (seatToDelete != null)
-        //    {
-        //        _context.Seats.Remove(seatToDelete);
-        //        _context.SaveChanges();
-        //        return true;
-        //    }
-
-        //    return false;
-        //}
     }
 }
+
+//public SeatDetailsDto UpdateSeat(int seatId, SeatDetailsDto seatDto)
+//{
+//    var seat = _mapper.Map<SeatDetails>(seatDto);
+//    var existingSeat = _context.Seats.FirstOrDefault(t => t.SeatId == seatId);
+
+//    if (existingSeat != null)
+//    {
+//        existingSeat.SeatType = seat.SeatType;
+//        existingSeat.SeatNumber = seat.SeatNumber;
+//        _context.SaveChanges();
+
+//        return _mapper.Map<SeatDetailsDto>(existingSeat);
+//    }
+//    return null;
+//}
+//public bool Delete(int seatId)
+//{
+//    var seatToDelete = _context.Seats.FirstOrDefault(u => u.SeatId == seatId);
+
+//    if (seatToDelete != null)
+//    {
+//        _context.Seats.Remove(seatToDelete);
+//        _context.SaveChanges();
+//        return true;
+//    }
+
+//    return false;
+//}

@@ -8,8 +8,7 @@ namespace TrainTicket.Interfaces
         UserDetails UpdateUser(string emailId, UserDetails updatedUser);
         UserDetails ResetPassword(string userEmail, string newPassword);
         bool Delete(string emailId);
-        TicketTable BookTicket(TicketTable ticket);
+        List<(TicketTable, decimal)> BookTickets(List<TicketTable> tickets);
         TicketTable CancelTicket(string pnr);
-
     }
 }
