@@ -10,9 +10,8 @@ namespace TrainTicket.Controllers
     public class TrainDetailsController : ControllerBase
     {
         private readonly ITrainDetailsInterface _trainDetailsInterface;
-        private readonly ReservationDbContext _context;
 
-        public TrainDetailsController(ITrainDetailsInterface trainDetailsInterface, ReservationDbContext context)
+        public TrainDetailsController(ITrainDetailsInterface trainDetailsInterface)
         {
             _trainDetailsInterface = trainDetailsInterface;
         }
@@ -47,24 +46,35 @@ namespace TrainTicket.Controllers
             return BadRequest("Train departure or arrival times are not within the valid range");
         }
 
-
-        [HttpPut("UpdateTrain")]
+        [HttpPut("UpdateTrain/{trainNumber}")]
         [Authorize(Roles = "Admin")]
-        public IActionResult UpdateTrain(int trainid, [FromBody] TrainDetailsDto trainDto)
+        public IActionResult UpdateTrain(int trainNumber, [FromBody] TrainDetailsDto trainDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var updatedTrain = _trainDetailsInterface.UpdateTrain(trainid, trainDto);
+            var updatedTrain = _trainDetailsInterface.UpdateTrain(trainNumber, trainDto);
             if (updatedTrain != null)
             {
                 return Ok(updatedTrain);
             }
             return NotFound("Train not found.");
         }
-        [HttpDelete("Delete")]
+
+        [HttpGet("GetTrainByNumber/{trainNumber}")]
+        public IActionResult GetTrainByNumber(int trainNumber)
+        {
+            var train = _trainDetailsInterface.GetTrainByNumber(trainNumber);
+            if (train != null)
+            {
+                return Ok(train);
+            }
+            return NotFound("Train not found.");
+        }
+
+        [HttpDelete("Delete/{trainNumber}")]
         [Authorize(Roles = "Admin")]
         public IActionResult Delete(int trainNumber)
         {

@@ -25,16 +25,27 @@ namespace TrainTicket.Repository
             return _mapper.Map<TrainDetailsDto>(train);
         }
 
-        public TrainDetailsDto GetTrainByNumber(int trainid)
+        public TrainDetailsDto GetTrainByNumber(int trainNumber)
         {
-            var train = _context.Trains.Find(trainid);
+            var train = _context.Trains.SingleOrDefault(t => t.TrainNumber == trainNumber);
             return _mapper.Map<TrainDetailsDto>(train);
         }
 
-        public TrainDetailsDto UpdateTrain(int trainid, TrainDetailsDto trainDto)
+        //[HttpGet("GetTrainByNumber/{trainNumber}")]
+        //public IActionResult GetTrainByNumber(int trainNumber)
+        //{
+        //    var train = _ITrainDetailsInterface.GetTrainByNumber(trainNumber);
+        //    if (train != null)
+        //    {
+        //        return Ok(train);
+        //    }
+        //    return NotFound("Train not found.");
+        //}
+
+        public TrainDetailsDto UpdateTrain(int trainNumber, TrainDetailsDto trainDto)
         {
             var train = _mapper.Map<TrainDetails>(trainDto);
-            var existingTrain = _context.Trains.Find(trainid);
+            var existingTrain = _context.Trains.SingleOrDefault(t => t.TrainNumber == trainNumber);
 
             if (existingTrain != null)
             {
@@ -52,6 +63,7 @@ namespace TrainTicket.Repository
             }
             return null;
         }
+
 
         public bool Delete(int trainNumber)
         {
