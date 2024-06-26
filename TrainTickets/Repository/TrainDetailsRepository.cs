@@ -27,7 +27,7 @@ namespace TrainTicket.Repository
 
         public TrainDetailsDto GetTrainByNumber(int trainid)
         {
-            var train = _context.Trains.Find(trainid);
+            var train = _context.Trains.SingleOrDefault(t => t.TrainNumber == trainNumber);
             return _mapper.Map<TrainDetailsDto>(train);
         }
 
