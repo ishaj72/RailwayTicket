@@ -64,6 +64,16 @@ namespace TrainTicket.Controllers
             }
             return NotFound("Train not found.");
         }
+        [HttpGet("GetTrainByNumber/{trainNumber}")]
+        public IActionResult GetTrainByNumber(int trainNumber)
+        {
+            var train = _trainDetailsInterface.GetTrainByNumber(trainNumber);
+            if (train != null)
+            {
+                return Ok(train);
+            }
+            return NotFound("Train not found.");
+        }
         [HttpDelete("Delete")]
         [Authorize(Roles = "Admin")]
         public IActionResult Delete(int trainNumber)
