@@ -14,7 +14,7 @@ Created API for ticket reservation system using .NET.
 Welcome to the ASP.NET API designed to streamline ticket reservation processes. This application caters to two distinct roles:
 - **Admin**: Responsible for comprehensive CRUD operations related to managing train details and seat allocations.
 - **User**: Enables users to manage their profiles efficiently, facilitating ticket booking and cancellation seamlessly.
-- **Other Functionalities**: Used JWT token for authorization and SMTP for email sending. 
+- **Other Functionalities**: <ul><li>Used JWT token for authorization and SMTP for email sending.</li><li>Everytime a new train is added 10 seats(for each of 3AC , 2AC, 1AC , Sleeper, General)</li></ul>
 
 ## Installation
 
@@ -35,7 +35,7 @@ Welcome to the ASP.NET API designed to streamline ticket reservation processes. 
 
 ## For Migration of Database
 - Add-Migration "your-migration-name"
-- Update Database
+- Update-Database
 
 ## Usage
 
