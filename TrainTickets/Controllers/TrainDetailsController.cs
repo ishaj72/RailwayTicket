@@ -87,7 +87,10 @@ namespace TrainTicket.Controllers
             }
             return NotFound("Train not found.");
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 243a25b91a6f2ede039fe517dfb50486ba05981a
         [HttpGet("GetTrainByNumber/{trainNumber}")]
         public IActionResult GetTrainByNumber(int trainNumber)
         {
@@ -98,8 +101,12 @@ namespace TrainTicket.Controllers
             }
             return NotFound("Train not found.");
         }
+<<<<<<< HEAD
 
         [HttpDelete("Delete/{trainNumber}")]
+=======
+        [HttpDelete("Delete")]
+>>>>>>> 243a25b91a6f2ede039fe517dfb50486ba05981a
         [Authorize(Roles = "Admin")]
         public IActionResult Delete(int trainNumber)
         {
