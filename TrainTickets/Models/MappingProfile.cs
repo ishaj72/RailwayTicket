@@ -7,10 +7,11 @@ namespace TrainTicket.MappingProfiles
     {
         public MappingProfile()
         {
+            CreateMap<TrainDetailsDto, TrainDetails>()
+            .ForMember(dest => dest.TrainNumber, opt => opt.MapFrom(src => src.TrainNumber));
+            CreateMap<SeatDetailsDto, SeatDetails>();
             CreateMap<TrainDetails, TrainDetailsDto>();
-            CreateMap<TrainDetailsDto, TrainDetails>();
-
-            CreateMap<SeatDetails, SeatDetailsDto>().ReverseMap();
+            CreateMap<SeatDetails, SeatDetailsDto>();
         }
     }
 }

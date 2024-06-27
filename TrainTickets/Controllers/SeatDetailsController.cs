@@ -29,14 +29,17 @@ namespace TrainTicket.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var seat = _mapper.Map<SeatDetails>(seatDto);
 
+            var seat = _mapper.Map<SeatDetails>(seatDto);
             var existingTrain = _trainDetailsInterface.GetTrainByNumber(seatDto.TrainNumber);
+
             if (existingTrain == null)
             {
                 return BadRequest("Train number does not exist.");
             }
+
             var newSeat = _seatDetailsInterface.AddSeat(seat);
+
             if (newSeat != null)
             {
                 var newSeatDto = _mapper.Map<SeatDetailsDto>(newSeat);
@@ -45,32 +48,38 @@ namespace TrainTicket.Controllers
 
             return BadRequest("Seat not added.");
         }
-        //[HttpPut("UpdateTrain")]
-        //[Authorize(Roles = "Admin")]
-        //public IActionResult UpdateSeat(int seatId, [FromBody] SeatDetailsDto seatDto)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
 
-        //    var updatedSeat = _seatDetailsInterface.UpdateSeat(seatId, seatDto);
-        //    if (updatedSeat != null)
-        //    {
-        //        return Ok("Seat Details Updated");
-        //    }
-        //    return NotFound("Seat not found.");
-        //}
-        //[HttpDelete("Delete")]
-        //[Authorize(Roles = "Admin")]
-        //public IActionResult Delete(int seatId)
-        //{
-        //    var deleted = _seatDetailsInterface.Delete(seatId);
-        //    if (deleted)
-        //    {
-        //        return Ok("Seat deleted successfully.");
-        //    }
-        //    return NotFound("Seat not found.");
-        //}
+        [HttpPut("UpdateSeat/{seatId}")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult UpdateSeat(int seatId, [FromBody] SeatDetailsDto seatDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var seat = _mapper.Map<SeatDetails>(seatDto);
+            var updatedSeat = _seatDetailsInterface.UpdateSeat(seatId, seat);
+
+            if (updatedSeat != null)
+            {
+                var updatedSeatDto = _mapper.Map<SeatDetailsDto>(updatedSeat);
+                return Ok(updatedSeatDto);
+            }
+
+            return NotFound("Seat not found.");
+        }
+
+        [HttpDelete("DeleteSeat/{seatId}")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult DeleteSeat(int seatId)
+        {
+            var deleted = _seatDetailsInterface.Delete(seatId);
+            if (deleted)
+            {
+                return Ok("Seat deleted successfully.");
+            }
+            return NotFound("Seat not found.");
+        }
     }
 }

@@ -7,7 +7,7 @@ namespace TrainTicket.Models
         [Required]
         public string TrainName { get; set; }
         [Required]
-        public string TrainNumber { get; set;}
+        public int TrainNumber { get; set; }
         [Required]
         public string Source { get; set; }
         [Required]

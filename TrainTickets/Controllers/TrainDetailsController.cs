@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TrainTicket.Interfaces;
 using TrainTicket.Models;
@@ -10,10 +11,14 @@ namespace TrainTicket.Controllers
     public class TrainDetailsController : ControllerBase
     {
         private readonly ITrainDetailsInterface _trainDetailsInterface;
+        private readonly ISeatDetailsInterface _seatDetailsInterface;
+        private readonly IMapper _mapper;
 
-        public TrainDetailsController(ITrainDetailsInterface trainDetailsInterface)
+        public TrainDetailsController(ITrainDetailsInterface trainDetailsInterface, ISeatDetailsInterface seatDetailsInterface, IMapper mapper)
         {
             _trainDetailsInterface = trainDetailsInterface;
+            _seatDetailsInterface = seatDetailsInterface;
+            _mapper = mapper;
         }
 
         [HttpPost("AddTrain")]
@@ -24,6 +29,7 @@ namespace TrainTicket.Controllers
             {
                 return BadRequest(ModelState);
             }
+
             DateTime minDepartureDate = DateTime.Now;
             DateTime maxDepartureDate = DateTime.Now.AddMonths(3);
 
@@ -39,12 +45,31 @@ namespace TrainTicket.Controllers
                 var newTrain = _trainDetailsInterface.AddTrains(trainDto);
                 if (newTrain != null)
                 {
+                    var seatTypes = new[] { "3AC", "2AC", "1AC", "Sleeper", "General" };
+                    var seatStatus = "Not Reserved";
+
+                    foreach (var seatType in seatTypes)
+                    {
+                        for (int i = 1; i <= 10; i++)
+                        {
+                            var seat = new SeatDetails
+                            {
+                                TrainNumber = newTrain.TrainNumber, // Ensure TrainNumber is an int
+                                SeatNumber = i,
+                                SeatType = seatType,
+                                SeatStatus = seatStatus
+                            };
+                            _seatDetailsInterface.AddSeat(seat);
+                        }
+                    }
+
                     return Ok(newTrain);
                 }
                 return BadRequest("Train could not be added");
             }
             return BadRequest("Train departure or arrival times are not within the valid range");
         }
+
 
         [HttpPut("UpdateTrain/{trainNumber}")]
         [Authorize(Roles = "Admin")]
